@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Void CPT — Case Study · Ezlin Studio</title>
+<meta name="description" content="How Ezlin Studio designed and built a dark, editorial e-commerce site for Void CPT, a Cape Town streetwear label.">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --void:   #080808;
+  --surface:#111111;
+  --card:   #161616;
+  --border: #242424;
+  --gold:   #C9A84C;
+  --text:   #F0EDE8;
+  --muted:  #6B6660;
+  --soft:   #A09890;
+  --red:    #C0392B;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--void);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.03; pointer-events: none; z-index: 1000;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 20px 40px;
+  display: flex; justify-content: space-between; align-items: center;
+  background: linear-gradient(to bottom, rgba(8,8,8,0.97), transparent);
+}
+.nav-back {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none;
+}
+.nav-back-arrow {
+  font-size: 16px; color: var(--gold);
+  transition: transform 0.2s;
+}
+.nav-back:hover .nav-back-arrow { transform: translateX(-3px); }
+.nav-back-text {
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px; text-decoration: none;
+}
+.nav-logo-text {
+  font-family: 'Space Grotesk', sans-serif; font-size: 18px;
+  font-weight: 600; letter-spacing: -0.02em; color: var(--text);
+}
+.nav-logo-text span { color: var(--gold); }
+
+/* ── HERO ── */
+.cs-hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 0 40px 80px;
+  position: relative; overflow: hidden;
+}
+.cs-hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 50% 70% at 80% 40%, rgba(192,57,43,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 50% at 10% 80%, rgba(201,168,76,0.04) 0%, transparent 60%);
+}
+.cs-hero-line {
+  position: absolute; top: 0; bottom: 0; width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--border), transparent);
+  opacity: 0.5;
+}
+.cs-hero-line:nth-child(2) { left: 33%; }
+.cs-hero-line:nth-child(3) { left: 66%; }
+
+.cs-eyebrow {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 24px;
+  opacity: 0; animation: fadeUp 0.8s 0.3s forwards;
+}
+.cs-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(52px, 12vw, 120px);
+  font-weight: 700; letter-spacing: -0.05em; line-height: 0.9;
+  opacity: 0; animation: fadeUp 0.9s 0.5s forwards;
+}
+.cs-title .outline {
+  -webkit-text-stroke: 1px rgba(240,237,232,0.2); color: transparent;
+}
+.cs-title .red { color: var(--red); }
+
+.cs-meta {
+  margin-top: 40px;
+  display: flex; gap: 0;
+  background: var(--border);
+  opacity: 0; animation: fadeUp 0.9s 0.8s forwards;
+  max-width: 640px;
+}
+.cs-meta-item {
+  flex: 1;
+  background: var(--card);
+  padding: 20px 24px;
+}
+.cs-meta-item + .cs-meta-item { border-left: 1px solid var(--border); }
+.cs-meta-label {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted);
+  margin-bottom: 6px;
+}
+.cs-meta-value {
+  font-family: 'Space Grotesk', sans-serif; font-size: 14px;
+  font-weight: 600; color: var(--text); letter-spacing: -0.01em;
+}
+
+/* ── SECTIONS ── */
+.cs-section {
+  padding: 80px 40px;
+  border-top: 1px solid var(--border);
+  max-width: 860px;
+}
+.cs-section.full { max-width: none; }
+.cs-tag {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 32px;
+  display: flex; align-items: center; gap: 12px;
+}
+.cs-tag::after {
+  content: ''; flex: 1; height: 1px; background: var(--border); max-width: 60px;
+}
+.cs-headline {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(26px, 5vw, 40px);
+  font-weight: 700; letter-spacing: -0.03em; line-height: 1.05;
+  margin-bottom: 20px;
+}
+.cs-body {
+  font-size: 15px; color: var(--soft); line-height: 1.9;
+  max-width: 600px;
+}
+.cs-body + .cs-body { margin-top: 16px; }
+
+/* ── BRIEF GRID ── */
+.brief-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1px; background: var(--border);
+  margin-top: 48px;
+}
+.brief-item {
+  background: var(--card); padding: 28px 24px;
+}
+.brief-q {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 10px;
+}
+.brief-a {
+  font-size: 14px; color: var(--soft); line-height: 1.75;
+}
+
+/* ── SITE PREVIEW ── */
+.preview-wrap {
+  margin-top: 52px;
+  background: #030303;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.preview-bar {
+  background: #111; border-bottom: 1px solid var(--border);
+  padding: 10px 16px; display: flex; align-items: center; gap: 10px;
+}
+.preview-dots { display: flex; gap: 5px; }
+.preview-dot {
+  width: 9px; height: 9px; border-radius: 50%; background: #2a2a2a;
+}
+.preview-url {
+  flex: 1; background: #0a0a0a; border: 1px solid #222;
+  border-radius: 3px; padding: 4px 10px;
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 0.05em; color: var(--muted);
+}
+.preview-screen {
+  width: 100%; aspect-ratio: 16/9;
+  background: #050505;
+  display: flex; align-items: stretch;
+  position: relative; overflow: hidden;
+}
+
+/* Rendered mini-site inside preview */
+.mini-nav {
+  position: absolute; top: 0; left: 0; right: 0;
+  padding: 10px 20px; display: flex;
+  justify-content: space-between; align-items: center;
+  background: linear-gradient(to bottom, rgba(5,5,5,0.98), transparent);
+  z-index: 2;
+}
+.mini-logo {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase; color: #F2F0EC;
+}
+.mini-nav-links {
+  display: flex; gap: 14px;
+}
+.mini-nav-link {
+  font-family: 'DM Mono', monospace; font-size: 7px;
+  letter-spacing: 0.12em; text-transform: uppercase; color: #555;
+}
+.mini-hero-content {
+  position: absolute; bottom: 28%; left: 20px; z-index: 2;
+}
+.mini-eyebrow {
+  font-family: 'DM Mono', monospace; font-size: 7px;
+  letter-spacing: 0.2em; text-transform: uppercase; color: #C0392B;
+  margin-bottom: 6px;
+}
+.mini-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(22px, 6vw, 48px);
+  font-weight: 700; letter-spacing: -0.05em; line-height: 0.88; color: #F2F0EC;
+}
+.mini-title .mini-outline {
+  -webkit-text-stroke: 1px rgba(242,240,236,0.2); color: transparent;
+}
+.mini-title .mini-red { color: #C0392B; }
+.mini-sub {
+  margin-top: 8px; font-size: 8px; color: #888; max-width: 140px; line-height: 1.6;
+}
+.mini-cta {
+  margin-top: 10px;
+  font-family: 'DM Mono', monospace; font-size: 7px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  background: #F2F0EC; color: #050505;
+  padding: 6px 12px; display: inline-block;
+}
+.mini-ticker {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  border-top: 1px solid #222; padding: 7px 0;
+  overflow: hidden; z-index: 2; background: rgba(5,5,5,0.8);
+}
+.mini-ticker-text {
+  font-family: 'DM Mono', monospace; font-size: 7px;
+  letter-spacing: 0.16em; text-transform: uppercase; color: #555;
+  white-space: nowrap;
+  animation: ticker 10s linear infinite;
+}
+.mini-red-glow {
+  position: absolute; top: 0; right: 0; bottom: 0; width: 40%;
+  background: radial-gradient(ellipse 60% 80% at 70% 50%, rgba(192,57,43,0.08) 0%, transparent 70%);
+}
+@keyframes ticker {
+  from { transform: translateX(100%); }
+  to { transform: translateX(-100%); }
+}
+
+/* ── DECISIONS ── */
+.decisions {
+  display: flex; flex-direction: column;
+  gap: 1px; background: var(--border); margin-top: 52px;
+}
+.decision {
+  background: var(--card); padding: 32px 28px;
+  display: grid; grid-template-columns: 48px 1fr; gap: 20px; align-items: start;
+}
+.decision-num {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 32px; font-weight: 700;
+  color: var(--border); letter-spacing: -0.04em; line-height: 1;
+  padding-top: 2px;
+}
+.decision-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 17px; font-weight: 600;
+  color: var(--text); letter-spacing: -0.01em; margin-bottom: 8px;
+}
+.decision-body { font-size: 13px; color: var(--soft); line-height: 1.8; }
+
+/* ── PALETTE ── */
+.palette {
+  display: flex; gap: 1px; background: var(--border);
+  margin-top: 48px; overflow: hidden;
+}
+.swatch {
+  flex: 1; padding: 24px 16px;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  min-height: 120px;
+}
+.swatch-name {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 2px;
+}
+.swatch-hex {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  letter-spacing: 0.08em; opacity: 0.6;
+}
+
+/* ── TYPE SPECIMEN ── */
+.type-specimen {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1px; background: var(--border); margin-top: 48px;
+}
+.type-item {
+  background: var(--card); padding: 28px 24px;
+}
+.type-role {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 12px;
+}
+.type-display {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 28px; font-weight: 700;
+  color: var(--text); letter-spacing: -0.04em; line-height: 1;
+}
+.type-display.red { color: #C0392B; }
+.type-mono {
+  font-family: 'DM Mono', monospace; font-size: 12px;
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted);
+  line-height: 1.6;
+}
+.type-body-sample {
+  font-size: 13px; color: var(--soft); line-height: 1.8;
+}
+.type-detail {
+  margin-top: 8px; font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 0.1em; color: var(--muted);
+}
+
+/* ── OUTCOME ── */
+.outcome-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--border); margin-top: 48px;
+}
+.outcome-item {
+  background: var(--card); padding: 28px 20px; text-align: center;
+}
+.outcome-num {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 36px; font-weight: 700;
+  color: var(--gold); letter-spacing: -0.03em;
+  display: block; line-height: 1; margin-bottom: 8px;
+}
+.outcome-label {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+}
+
+/* ── CTA ── */
+.cs-cta {
+  padding: 80px 40px;
+  border-top: 1px solid var(--border);
+  display: flex; flex-direction: column; align-items: flex-start; gap: 28px;
+}
+.cs-cta-headline {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(28px, 6vw, 52px);
+  font-weight: 700; letter-spacing: -0.04em; line-height: 1;
+  max-width: 540px;
+}
+.cs-cta-headline span { color: var(--gold); }
+.cs-cta-row { display: flex; gap: 14px; flex-wrap: wrap; }
+.btn-primary {
+  font-family: 'DM Mono', monospace; font-size: 12px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  background: var(--gold); color: var(--void); border: none;
+  padding: 16px 32px; cursor: pointer;
+  transition: opacity 0.2s; text-decoration: none; display: inline-block;
+}
+.btn-primary:hover { opacity: 0.85; }
+.btn-ghost {
+  font-family: 'DM Mono', monospace; font-size: 12px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  background: transparent; color: var(--muted);
+  border: 1px solid var(--border); padding: 16px 32px;
+  transition: all 0.2s; text-decoration: none; display: inline-block;
+}
+.btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+/* ── FOOTER ── */
+footer {
+  padding: 40px; border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.footer-logo-text {
+  font-family: 'Space Grotesk', sans-serif; font-size: 18px;
+  font-weight: 700; letter-spacing: -0.02em; color: var(--text);
+}
+.footer-logo-text span { color: var(--gold); }
+.footer-copy {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  color: var(--muted); letter-spacing: 0.1em;
+}
+
+/* ── REVEAL ── */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.65s ease, transform 0.65s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+/* ── MOBILE ── */
+@media (max-width: 680px) {
+  nav { padding: 16px 20px; }
+  .cs-hero { padding: 0 20px 60px; }
+  .cs-section { padding: 60px 20px; }
+  .cs-meta { flex-direction: column; }
+  .cs-meta-item + .cs-meta-item { border-left: none; border-top: 1px solid var(--border); }
+  .brief-grid { grid-template-columns: 1fr; }
+  .type-specimen { grid-template-columns: 1fr; }
+  .outcome-grid { grid-template-columns: 1fr; }
+  .palette { flex-wrap: wrap; }
+  .swatch { flex: 1 1 45%; min-height: 80px; }
+  footer { flex-direction: column; gap: 16px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="ezlin_v2.html" class="nav-back">
+    <span class="nav-back-arrow">←</span>
+    <span class="nav-back-text">Back to Ezlin Studio</span>
+  </a>
+  <a href="ezlin_v2.html" class="nav-logo">
+    <svg width="28" height="28" viewBox="0 0 80 80" fill="none" aria-hidden="true">
+      <ellipse cx="40" cy="34" rx="30" ry="13" fill="none" stroke="#C9A84C" stroke-width="3.2" stroke-linecap="round"/>
+      <line x1="22" y1="22" x2="52" y2="25" stroke="#C9A84C" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="46" y1="24" x2="36" y2="64" stroke="#C9A84C" stroke-width="4.5" stroke-linecap="round"/>
+      <line x1="25" y1="33" x2="46" y2="34.5" stroke="#C9A84C" stroke-width="2.8" stroke-linecap="round"/>
+    </svg>
+    <span class="nav-logo-text">Ezlin<span>.</span></span>
+  </a>
+</nav>
+
+<!-- HERO -->
+<section class="cs-hero">
+  <div class="cs-hero-bg"></div>
+  <div class="cs-hero-line"></div>
+  <div class="cs-hero-line"></div>
+  <p class="cs-eyebrow">Case Study · 01 · Concept Project</p>
+  <h1 class="cs-title">
+    VOID<br>
+    <span class="outline">CPT</span><span class="red">.</span>
+  </h1>
+  <div class="cs-meta">
+    <div class="cs-meta-item">
+      <p class="cs-meta-label">Client</p>
+      <p class="cs-meta-value">Void CPT (concept)</p>
+    </div>
+    <div class="cs-meta-item">
+      <p class="cs-meta-label">Industry</p>
+      <p class="cs-meta-value">Streetwear / Retail</p>
+    </div>
+    <div class="cs-meta-item">
+      <p class="cs-meta-label">Package</p>
+      <p class="cs-meta-value">Presence Pro</p>
+    </div>
+    <div class="cs-meta-item">
+      <p class="cs-meta-label">Delivered in</p>
+      <p class="cs-meta-value">6 days</p>
+    </div>
+  </div>
+</section>
+
+<!-- BRIEF -->
+<section class="cs-section reveal">
+  <p class="cs-tag">The brief</p>
+  <h2 class="cs-headline">A Cape Town streetwear label that needed to look the part.</h2>
+  <p class="cs-body">Void CPT is a concept streetwear brand rooted in Cape Town culture — limited drops, no restocks, raw identity. The brief was to build a site that felt as intentional as the clothes: dark, editorial, and built for a generation that can spot a template from a mile away.</p>
+  <p class="cs-body">The challenge wasn't making it look cool. The challenge was making it convert — getting visitors to act before a drop sells out — without losing the aesthetic that makes the brand worth caring about in the first place.</p>
+
+  <div class="brief-grid">
+    <div class="brief-item">
+      <p class="brief-q">What they needed</p>
+      <p class="brief-a">A full storefront with product drops, category navigation, brand story, and newsletter sign-up for drop alerts. Mobile-first, fast-loading, no compromise on design.</p>
+    </div>
+    <div class="brief-item">
+      <p class="brief-q">What they didn't want</p>
+      <p class="brief-a">Templates. Generic e-commerce layouts. Anything that looked like it could belong to any other brand. The site had to be unmistakably Void CPT.</p>
+    </div>
+    <div class="brief-item">
+      <p class="brief-q">The audience</p>
+      <p class="brief-a">18–30 year olds in Cape Town and SA's urban centres. Culturally sharp, visually literate, loyal to brands that feel authentic and locally rooted.</p>
+    </div>
+    <div class="brief-item">
+      <p class="brief-q">The constraint</p>
+      <p class="brief-a">Pure HTML, CSS, and JS — no frameworks, no CMS. The client needed to own the code outright and keep hosting costs at zero.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PREVIEW -->
+<section class="cs-section full reveal" style="padding-left:40px; padding-right:40px;">
+  <p class="cs-tag">The site</p>
+  <h2 class="cs-headline" style="max-width:860px; padding: 0 0 0 0;">What we built.</h2>
+
+  <div class="preview-wrap" style="margin-top:48px;">
+    <div class="preview-bar">
+      <div class="preview-dots">
+        <div class="preview-dot"></div>
+        <div class="preview-dot"></div>
+        <div class="preview-dot"></div>
+      </div>
+      <div class="preview-url">voidcpt.netlify.app</div>
+    </div>
+    <div class="preview-screen">
+      <div class="mini-red-glow"></div>
+      <div class="mini-nav">
+        <span class="mini-logo">Void CPT</span>
+        <div class="mini-nav-links">
+          <span class="mini-nav-link">Drops</span>
+          <span class="mini-nav-link">Shop</span>
+          <span class="mini-nav-link">About</span>
+          <span class="mini-nav-link">Bag (0)</span>
+        </div>
+      </div>
+      <div class="mini-hero-content">
+        <p class="mini-eyebrow">Cape Town · Est. 2021 · Limited Drops</p>
+        <div class="mini-title">
+          VOID<br>
+          <span class="mini-outline">CPT</span><span class="mini-red">.</span>
+        </div>
+        <p class="mini-sub">Streetwear from the streets that built us. Limited runs. No restocks.</p>
+        <span class="mini-cta">Shop the drop</span>
+      </div>
+      <div class="mini-ticker">
+        <span class="mini-ticker-text">New drop ✦ Dark Season Vol. 3 &nbsp;&nbsp;&nbsp; Free delivery ✦ Orders over R800 &nbsp;&nbsp;&nbsp; Cape Town ✦ SA wide shipping &nbsp;&nbsp;&nbsp; Limited units ✦ No restocks</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DECISIONS -->
+<section class="cs-section reveal">
+  <p class="cs-tag">Design decisions</p>
+  <h2 class="cs-headline">Every choice had a reason.</h2>
+  <p class="cs-body">Good design isn't decoration. Every decision here was made in service of the brand and the user.</p>
+
+  <div class="decisions">
+    <div class="decision">
+      <span class="decision-num">01</span>
+      <div>
+        <p class="decision-title">Void black over standard dark</p>
+        <p class="decision-body">The background is #050505 — not dark grey, not navy. True void. It makes every element on the page feel like it's floating. For a brand called Void CPT, this wasn't a stylistic choice, it was the only honest one.</p>
+      </div>
+    </div>
+    <div class="decision">
+      <span class="decision-num">02</span>
+      <div>
+        <p class="decision-title">The scrolling ticker at the hero base</p>
+        <p class="decision-body">Drop alerts, shipping info, scarcity signals — the ticker communicates all three without taking up any real estate. It keeps the hero clean while doing genuine conversion work underneath. Borrowed from streetwear brand sites that actually sell.</p>
+      </div>
+    </div>
+    <div class="decision">
+      <span class="decision-num">03</span>
+      <div>
+        <p class="decision-title">Product cards as full-bleed image containers</p>
+        <p class="decision-body">The product grid uses aspect-ratio-locked cards with overlaid text at the bottom. No separate product title rows, no cluttered metadata. The image does the selling; the overlay handles the essentials. Tap to explore — not tap to find out what it is.</p>
+      </div>
+    </div>
+    <div class="decision">
+      <span class="decision-num">04</span>
+      <div>
+        <p class="decision-title">The manifesto section between products and shop</p>
+        <p class="decision-body">"We didn't come from fashion week. We came from the Cape Flats." This sits between product sections — not at the bottom where no one reads it. Culture-first brands need their story in the scroll path, not buried. It reframes the purchase as something worth making.</p>
+      </div>
+    </div>
+    <div class="decision">
+      <span class="decision-num">05</span>
+      <div>
+        <p class="decision-title">Crosshair cursor</p>
+        <p class="decision-body">A small detail that lands hard for the right audience. The crosshair cursor signals precision, edge, and intentionality — three things the brand stands for. It costs nothing and communicates volumes to anyone paying attention.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BRAND SYSTEM -->
+<section class="cs-section reveal">
+  <p class="cs-tag">Brand system</p>
+  <h2 class="cs-headline">Colour & type.</h2>
+
+  <div class="palette">
+    <div class="swatch" style="background:#050505;">
+      <span class="swatch-name" style="color:#333;">Void</span>
+      <span class="swatch-hex" style="color:#333;">#050505</span>
+    </div>
+    <div class="swatch" style="background:#141414;">
+      <span class="swatch-name" style="color:#444;">Surface</span>
+      <span class="swatch-hex" style="color:#444;">#141414</span>
+    </div>
+    <div class="swatch" style="background:#F2F0EC;">
+      <span class="swatch-name" style="color:#888;">Off-white</span>
+      <span class="swatch-hex" style="color:#888;">#F2F0EC</span>
+    </div>
+    <div class="swatch" style="background:#C0392B;">
+      <span class="swatch-name" style="color:rgba(255,255,255,0.7);">Signal red</span>
+      <span class="swatch-hex" style="color:rgba(255,255,255,0.5);">#C0392B</span>
+    </div>
+    <div class="swatch" style="background:#555050;">
+      <span class="swatch-name" style="color:#888;">Muted</span>
+      <span class="swatch-hex" style="color:#888;">#555050</span>
+    </div>
+  </div>
+
+  <div class="type-specimen">
+    <div class="type-item">
+      <p class="type-role">Display — Space Grotesk 700</p>
+      <p class="type-display">VOID<br><span class="red" style="color:#C0392B;">CPT.</span></p>
+      <p class="type-detail">Headlines, brand name, product names</p>
+    </div>
+    <div class="type-item">
+      <p class="type-role">Mono — DM Mono 400</p>
+      <p class="type-mono">DROPS · ABOUT · SHOP<br>FREE DELIVERY · R800+<br>LIMITED UNITS · NO RESTOCKS</p>
+      <p class="type-detail">Nav, tags, labels, ticker, CTAs</p>
+    </div>
+    <div class="type-item">
+      <p class="type-role">Body — Inter 300</p>
+      <p class="type-body-sample">Streetwear from the streets that built us. Limited runs. No restocks. Cape Town or nowhere.</p>
+      <p class="type-detail">Descriptions, manifesto, about copy</p>
+    </div>
+    <div class="type-item">
+      <p class="type-role">Accent — signal red</p>
+      <p class="type-display red">✦ New drop.</p>
+      <p class="type-detail">Eyebrows, tags, scarcity indicators, punctuation marks</p>
+    </div>
+  </div>
+</section>
+
+<!-- OUTCOME -->
+<section class="cs-section reveal">
+  <p class="cs-tag">The outcome</p>
+  <h2 class="cs-headline">A site that earns its aesthetic.</h2>
+  <p class="cs-body">Void CPT launched as a concept build demonstrating what Ezlin Studio can do for fashion and culture brands. The result is a site that looks like it belongs next to international streetwear labels — built entirely in HTML, CSS, and vanilla JS, owned outright, and hosted for free.</p>
+
+  <div class="outcome-grid">
+    <div class="outcome-item">
+      <span class="outcome-num">6</span>
+      <span class="outcome-label">Days to deliver</span>
+    </div>
+    <div class="outcome-item">
+      <span class="outcome-num">0</span>
+      <span class="outcome-label">Frameworks used</span>
+    </div>
+    <div class="outcome-item">
+      <span class="outcome-num">100%</span>
+      <span class="outcome-label">Client-owned code</span>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cs-cta reveal">
+  <p class="cs-cta-headline">Want something built for <span>your</span> business?</p>
+  <p style="font-size:15px; color:var(--soft); max-width:480px; line-height:1.8;">Packages start from R1,500. We work with businesses across South Africa — from salons to streetwear labels to food trucks.</p>
+  <div class="cs-cta-row">
+    <a href="ezlin_v2.html#contact" class="btn-primary">Get a free quote</a>
+    <a href="ezlin_v2.html#services" class="btn-ghost">See packages</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="ezlin_v2.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+    <svg width="28" height="28" viewBox="0 0 80 80" fill="none" aria-hidden="true">
+      <ellipse cx="40" cy="34" rx="30" ry="13" fill="none" stroke="#C9A84C" stroke-width="3.2" stroke-linecap="round"/>
+      <line x1="22" y1="22" x2="52" y2="25" stroke="#C9A84C" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="46" y1="24" x2="36" y2="64" stroke="#C9A84C" stroke-width="4.5" stroke-linecap="round"/>
+      <line x1="25" y1="33" x2="46" y2="34.5" stroke="#C9A84C" stroke-width="2.8" stroke-linecap="round"/>
+    </svg>
+    <span class="footer-logo-text">Ezlin<span>.</span></span>
+  </a>
+  <span class="footer-copy">© 2026 Ezlin Studio · Cape Town</span>
+</footer>
+
+<script>
+const reveals = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.06 });
+reveals.forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
